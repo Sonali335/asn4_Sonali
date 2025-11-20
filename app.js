@@ -43,7 +43,7 @@ app.engine('.hbs', engine({
 
 // Set Handlebars as view engine
 app.set('view engine', 'hbs');
-
+app.set('views', path.join(__dirname, 'views'));
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
     serverSelectionTimeoutMS: 15000,
