@@ -1,0 +1,91 @@
+<div class="all-data-wrapper">
+  <h2>All Airbnb Properties (Showing <span id="shownCount">{{data.length}}</span> of {{totalCount}})</h2>
+
+  <div class="table-wrapper">
+    <table id="airbnbTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Neighbourhood</th>
+          <th>Country</th>
+          <th>Instant Bookable</th>
+          <th>Property Type</th>
+          <th>Price</th>
+          <th>Thumbnail</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each data}}
+        <tr class="{{#unless this.NAME}}highlight{{/unless}}">
+          <td>{{this.id}}</td>
+          <td>{{this.NAME}}</td>
+          <td>{{this.neighbourhood}}</td>
+          <td>{{this.country}}</td>
+          <td>{{this.instant_bookable}}</td>
+          <td>{{this.property_type}}</td>
+          <td>{{this.price}}</td>
+          <td>
+            {{#if this.thumbnail}}
+              <img src="{{this.thumbnail}}" alt="{{this.NAME}}" width="80">
+            {{/if}}
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Infinite scroll trigger -->
+  <div id="scrollObserver"></div>
+</div>
+
+<script>
+let start = {{data.length}};
+const totalCount = {{totalCount}};
+let loading = false;
+
+async function loadMoreData() {
+  if (loading || start >= totalCount) return;
+  loading = true;
+
+  try {
+    const res = await fetch(`/viewData/more?start=${start}`);
+    const items = await res.json();
+
+    const tbody = document.querySelector('#airbnbTable tbody');
+
+    items.forEach(item => {
+      const tr = document.createElement('tr');
+      tr.className = !item.NAME ? 'highlight' : '';
+
+      tr.innerHTML = `
+        <td>${item.id}</td>
+        <td>${item.NAME || 'N/A'}</td>
+        <td>${item.neighbourhood || 'N/A'}</td>
+        <td>${item.country || 'N/A'}</td>
+        <td>${item.instant_bookable || 'N/A'}</td>
+        <td>${item.property_type || 'N/A'}</td>
+        <td>${item.price || 'N/A'}</td>
+        <td>${item.thumbnail ? `<img src="${item.thumbnail}" alt="${item.NAME}" width="80">` : ''}</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+
+    start += items.length;
+    document.getElementById('shownCount').innerText = start;
+    loading = false;
+
+  } catch (err) {
+    console.error(err);
+    loading = false;
+  }
+}
+
+const observer = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) loadMoreData();
+});
+
+observer.observe(document.getElementById('scrollObserver'));
+</script>

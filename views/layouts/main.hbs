@@ -1,0 +1,45 @@
+<!-- 
+/****************************************************************************************** 
+* ITE5315 – Assignment 2 
+* I declare that this assignment is my own work in accordance with Humber Academic Policy. 
+* No part of this assignment has been copied manually or electronically from any other source 
+* (including web sites) or distributed to other students.  
+*
+* Name: ___SONALI___ Student ID: ____N01689474____ Date: ______OCT 24, 2025______  
+*
+*******************************************************************************************/  -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title> <!-- Page title dynamically set from route -->
+  <link rel="stylesheet" href="/stylesheets/style.css"> <!-- Main stylesheet -->
+</head>
+<body>
+  {{> header}} <!-- Include header partial -->
+
+  <main class="content">
+    {{{body}}} <!-- Main page content injected here -->
+  </main>
+
+  {{> footer}} <!-- Include footer partial -->
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+
+    if (hamburger && navLinks) {
+      hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('show');
+      });
+    }
+  });
+</script>
+
+
+</body>
+</html>

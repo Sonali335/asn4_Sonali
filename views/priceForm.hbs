@@ -1,0 +1,75 @@
+<!-- 
+/****************************************************************************************** 
+* ITE5315 – Assignment 2 
+* I declare that this assignment is my own work in accordance with Humber Academic Policy. 
+* No part of this assignment has been copied manually or electronically from any other source 
+* (including web sites) or distributed to other students.  
+*
+* Name: ___SONALI___ Student ID: ____N01689474____ Date: ______OCT 24, 2025______  
+*
+*******************************************************************************************/  
+-->
+
+<h2>Search Airbnb by Price Range</h2>
+
+<!-- Form to input minimum and maximum price -->
+<form method="POST" action="/viewData/price">
+  <input type="text" name="minPrice" placeholder="Minimum Price" value="{{minPrice}}">
+  <input type="text" name="maxPrice" placeholder="Maximum Price" value="{{maxPrice}}">
+  <button type="submit">Search</button>
+</form>
+
+<!-- Display validation errors if any -->
+{{#if errors}}
+  <div class="error-box">
+    {{#each errors}}
+      <p>❌ {{this.msg}}</p>
+    {{/each}}
+  </div>
+{{/if}}
+
+<!-- Display search results if found -->
+{{#if results.length}}
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Neighbourhood</th>
+          <th>Country</th>
+          <th>Instant Bookable</th>
+          <th>Property Type</th>
+          <th>Price</th>
+          <th>Thumbnail</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each results}}
+          <tr>
+            <td>{{this.id}}</td>
+            <td>{{this.NAME}}</td>
+            <td>{{this.neighbourhood}}</td>
+            <td>{{this.country}}</td>
+            <td>{{this.instant_bookable}}</td>
+            <td>{{this.property_type}}</td>
+            <td>{{this.price}}</td>
+            <td>
+              {{#if this.thumbnail}}
+                <img src="{{this.thumbnail}}" alt="{{this.NAME}}" width="80">
+              {{/if}}
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+<!-- Message if no properties found in the given price range -->
+{{else if minPrice}}
+  <div class="error-box">
+    <p>⚠️ Please check values.. No properties found in the price range {{minPrice}} - {{maxPrice}}</p>
+  </div>
+{{/if}}
+
+<!-- Back button -->
+<a href="/viewData" class="button">Back to All Properties</a>

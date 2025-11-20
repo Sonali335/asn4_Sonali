@@ -1,0 +1,62 @@
+<h2>Search by Property Name</h2>
+
+<!-- Form to input the property name for search -->
+<form method="POST" action="/searchName">
+  <input type="text" name="name" placeholder="Enter Property Name" value="{{query}}">
+  <button type="submit">Search</button>
+</form>
+
+<!-- Display validation errors -->
+{{#if errors.length}}
+  <div class="error-box">
+    {{#each errors}}
+      <p>⚠️ {{this.msg}}</p>
+    {{/each}}
+  </div>
+{{/if}}
+
+<!-- Display search results if matching properties are found -->
+{{#if results.length}}
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Neighbourhood</th>
+          <th>Country</th>
+          <th>Instant Bookable</th>
+          <th>Property Type</th>
+          <th>Price</th>
+          <th>Thumbnail</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each results}}
+        <tr>
+          <td>{{this.id}}</td>
+          <td>{{this.NAME}}</td>
+          <td>{{this.neighbourhood}}</td>
+          <td>{{this.country}}</td>
+          <td>{{this.instant_bookable}}</td>
+          <td>{{this.property_type}}</td>
+          <td>{{this.price}}</td>
+          <td>
+            {{#if this.thumbnail}}
+              <img src="{{this.thumbnail}}" alt="{{this.NAME}}" width="80">
+            {{/if}}
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+{{else if query}}
+  <!-- Message when no properties match the search query -->
+  <div class="error-box">
+    <p>⚠️ No results found for "{{query}}"</p>
+  </div>
+{{/if}}
+
+<!-- Back button -->
+<a href="/viewData" class="button">Back to All Properties</a>
