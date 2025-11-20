@@ -1,10 +1,9 @@
-
 // Import express and path modules
-var express = require('express');
-var path = require('path');
+const express = require('express');
+const path = require('path');
 
 // Create express app
-var app = express();
+const app = express();
 
 // Load .env
 require("dotenv").config();
@@ -12,26 +11,24 @@ require("dotenv").config();
 // MongoDB
 const mongoose = require("mongoose");
 
-// Import Handlebars engine
+// Handlebars engine
 const { engine } = require('express-handlebars');
 
 // Middleware to parse form data
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// FIX: Prevent favicon.ico crash on deployment
+app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 // Import routes
 const a1Routes = require('./routes/a1Routes');
 const airbnbApiRoutes = require("./routes/airbnbApi");
-app.use("/api/airbnb", airbnbApiRoutes);
 
-
-
-// Set port
-const port = process.env.PORT || 3000;
-
-// Serve static files (CSS, images, JS)
+// Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Setup Handlebars engine
+// Setup Handlebars
 app.engine('.hbs', engine({
   extname: '.hbs',
   helpers: {
@@ -41,30 +38,48 @@ app.engine('.hbs', engine({
   }
 }));
 
-// Set Handlebars as view engine
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
-// Connect to MongoDB
+
+// =============================
+// MongoDB Connection
+// =============================
 mongoose.connect(process.env.MONGO_URI, {
-    serverSelectionTimeoutMS: 15000,
-    socketTimeoutMS: 45000,
-    family: 4
+  serverSelectionTimeoutMS: 15000,
+  socketTimeoutMS: 45000,
+  family: 4
 })
 .then(() => console.log("MongoDB Connected!"))
 .catch(err => console.error("MongoDB Error:", err));
 
+// =============================
+// Routes
+// =============================
+
 // Home route
 app.get('/', (req, res) => {
-  res.render('index', { title: 'Home Page' });
+  res.render('index', { title: "Home Page" });
 });
 
-// Use Assignment routes
+// Assignment 1 routes
 app.use('/', a1Routes);
 
-// Error route for invalid URLs
+// API routes
+app.use('/api/airbnb', airbnbApiRoutes);
+
+// 404 handler
 app.use((req, res) => {
-  res.render('error', { title: 'Error', message: 'Wrong Route' });
+  res.status(404).render('error', { 
+    title: 'Error', 
+    message: 'Route Not Found'
+  });
 });
 
+// =============================
 // Start server
-app.listen(config.port, () => console.log(`Server running at http://localhost:${congif.port}`));
+// =============================
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
