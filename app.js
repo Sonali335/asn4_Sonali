@@ -67,4 +67,4 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
+app.listen(config.port, () => console.log(`Server running at http://localhost:${congif.port}`));
